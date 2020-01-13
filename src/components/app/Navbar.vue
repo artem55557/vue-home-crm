@@ -17,9 +17,19 @@
     </div>
     <div class="user_info">
       Имя пользователя
-      <a href class="nav-btn">
+      <a href="#" class="nav-btn" @click.prevent="logout">
         <SvgIcon :name="'user'" />
       </a>
     </div>
   </nav>
 </template>
+<script>
+export default {
+  methods: {
+    logout() {
+      this.$store.dispatch('logout')
+      this.$router.push('/login')
+    }
+  }
+}
+</script>
