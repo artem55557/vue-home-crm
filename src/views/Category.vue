@@ -1,183 +1,100 @@
 <template>
   <div class="category-content">
     <div class="wrap">
-      <div class="card card-category">
+      <Loader v-if="loading"></Loader>
+      <template v-else>
+      <CategoryCard :categories="outcome" :type="'outcome'" @created="addNewCategory" @updated="updateCategory"></CategoryCard>
+      <CategoryCard :categories="income" :type="'income'" @created="addNewCategory" @updated="updateCategory"></CategoryCard>
+      <!-- <div class="card card-category">
         <div class="category-title">Категории расходов</div>
-        <div class="category-item">
-          Продукты питания
-          <span>
-            <i>
-              <svg
-                aria-hidden="true"
-                focusable="false"
-                data-prefix="fas"
-                data-icon="pencil-alt"
-                class="svg-inline--fa fa-pencil-alt fa-w-16"
-                role="img"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-              >
-                <path
-                  d="M497.9 142.1l-46.1 46.1c-4.7 4.7-12.3 4.7-17 0l-111-111c-4.7-4.7-4.7-12.3 0-17l46.1-46.1c18.7-18.7 49.1-18.7 67.9 0l60.1 60.1c18.8 18.7 18.8 49.1 0 67.9zM284.2 99.8L21.6 362.4.4 483.9c-2.9 16.4 11.4 30.6 27.8 27.8l121.5-21.3 262.6-262.6c4.7-4.7 4.7-12.3 0-17l-111-111c-4.8-4.7-12.4-4.7-17.1 0zM124.1 339.9c-5.5-5.5-5.5-14.3 0-19.8l154-154c5.5-5.5 14.3-5.5 19.8 0s5.5 14.3 0 19.8l-154 154c-5.5 5.5-14.3 5.5-19.8 0zM88 424h48v36.3l-64.5 11.3-31.1-31.1L51.7 376H88v48z"
-                />
-              </svg>
-            </i>
-          </span>
+        <template v-if="categories.outcome.length"><CategoryItem v-for="c in categories.outcome" :categoryName="c.title" :key="c.id"></CategoryItem></template>
+        <div class="category-item" v-else>
+          Категорий пока нет
         </div>
-        <div class="category-item">
-          Авто
-          <span>
-            <i>
-              <svg
-                aria-hidden="true"
-                focusable="false"
-                data-prefix="fas"
-                data-icon="pencil-alt"
-                class="svg-inline--fa fa-pencil-alt fa-w-16"
-                role="img"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-              >
-                <path
-                  d="M497.9 142.1l-46.1 46.1c-4.7 4.7-12.3 4.7-17 0l-111-111c-4.7-4.7-4.7-12.3 0-17l46.1-46.1c18.7-18.7 49.1-18.7 67.9 0l60.1 60.1c18.8 18.7 18.8 49.1 0 67.9zM284.2 99.8L21.6 362.4.4 483.9c-2.9 16.4 11.4 30.6 27.8 27.8l121.5-21.3 262.6-262.6c4.7-4.7 4.7-12.3 0-17l-111-111c-4.8-4.7-12.4-4.7-17.1 0zM124.1 339.9c-5.5-5.5-5.5-14.3 0-19.8l154-154c5.5-5.5 14.3-5.5 19.8 0s5.5 14.3 0 19.8l-154 154c-5.5 5.5-14.3 5.5-19.8 0zM88 424h48v36.3l-64.5 11.3-31.1-31.1L51.7 376H88v48z"
-                />
-              </svg>
-            </i>
-          </span>
+        <div class="category-input" v-if="isVisible">
+          <input type="text" name="category" id="category" v-model="category">
         </div>
-        <div class="category-item">
-          Комунальные услуги
-          <span>
-            <i>
-              <svg
-                aria-hidden="true"
-                focusable="false"
-                data-prefix="fas"
-                data-icon="pencil-alt"
-                class="svg-inline--fa fa-pencil-alt fa-w-16"
-                role="img"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-              >
-                <path
-                  d="M497.9 142.1l-46.1 46.1c-4.7 4.7-12.3 4.7-17 0l-111-111c-4.7-4.7-4.7-12.3 0-17l46.1-46.1c18.7-18.7 49.1-18.7 67.9 0l60.1 60.1c18.8 18.7 18.8 49.1 0 67.9zM284.2 99.8L21.6 362.4.4 483.9c-2.9 16.4 11.4 30.6 27.8 27.8l121.5-21.3 262.6-262.6c4.7-4.7 4.7-12.3 0-17l-111-111c-4.8-4.7-12.4-4.7-17.1 0zM124.1 339.9c-5.5-5.5-5.5-14.3 0-19.8l154-154c5.5-5.5 14.3-5.5 19.8 0s5.5 14.3 0 19.8l-154 154c-5.5 5.5-14.3 5.5-19.8 0zM88 424h48v36.3l-64.5 11.3-31.1-31.1L51.7 376H88v48z"
-                />
-              </svg>
-            </i>
-          </span>
-        </div>
-        <div class="category-item">
-          Медицина
-          <span>
-            <i>
-              <svg
-                aria-hidden="true"
-                focusable="false"
-                data-prefix="fas"
-                data-icon="pencil-alt"
-                class="svg-inline--fa fa-pencil-alt fa-w-16"
-                role="img"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-              >
-                <path
-                  d="M497.9 142.1l-46.1 46.1c-4.7 4.7-12.3 4.7-17 0l-111-111c-4.7-4.7-4.7-12.3 0-17l46.1-46.1c18.7-18.7 49.1-18.7 67.9 0l60.1 60.1c18.8 18.7 18.8 49.1 0 67.9zM284.2 99.8L21.6 362.4.4 483.9c-2.9 16.4 11.4 30.6 27.8 27.8l121.5-21.3 262.6-262.6c4.7-4.7 4.7-12.3 0-17l-111-111c-4.8-4.7-12.4-4.7-17.1 0zM124.1 339.9c-5.5-5.5-5.5-14.3 0-19.8l154-154c5.5-5.5 14.3-5.5 19.8 0s5.5 14.3 0 19.8l-154 154c-5.5 5.5-14.3 5.5-19.8 0zM88 424h48v36.3l-64.5 11.3-31.1-31.1L51.7 376H88v48z"
-                />
-              </svg>
-            </i>
-          </span>
-        </div>
-        <div class="category-item">
-          Комунальные услуги
-          <span>
-            <i>
-              <svg
-                aria-hidden="true"
-                focusable="false"
-                data-prefix="fas"
-                data-icon="pencil-alt"
-                class="svg-inline--fa fa-pencil-alt fa-w-16"
-                role="img"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-              >
-                <path
-                  d="M497.9 142.1l-46.1 46.1c-4.7 4.7-12.3 4.7-17 0l-111-111c-4.7-4.7-4.7-12.3 0-17l46.1-46.1c18.7-18.7 49.1-18.7 67.9 0l60.1 60.1c18.8 18.7 18.8 49.1 0 67.9zM284.2 99.8L21.6 362.4.4 483.9c-2.9 16.4 11.4 30.6 27.8 27.8l121.5-21.3 262.6-262.6c4.7-4.7 4.7-12.3 0-17l-111-111c-4.8-4.7-12.4-4.7-17.1 0zM124.1 339.9c-5.5-5.5-5.5-14.3 0-19.8l154-154c5.5-5.5 14.3-5.5 19.8 0s5.5 14.3 0 19.8l-154 154c-5.5 5.5-14.3 5.5-19.8 0zM88 424h48v36.3l-64.5 11.3-31.1-31.1L51.7 376H88v48z"
-                />
-              </svg>
-            </i>
-          </span>
-        </div>
-        <div class="add-category">+ добавить категорию</div>
+        <div class="add-category" @click="toggle" v-if="!isVisible">+ добавить категорию</div>
+        <div class="add-category" @click="addCategory('outcome')" v-if="isVisible">Сохранить</div>
       </div>
       <div class="card card-category">
         <div class="category-title">Категории доходов</div>
-        <div class="category-item">
-          Заработная плата
-          <span>
-            <i>
-              <svg
-                aria-hidden="true"
-                focusable="false"
-                data-prefix="fas"
-                data-icon="pencil-alt"
-                class="svg-inline--fa fa-pencil-alt fa-w-16"
-                role="img"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-              >
-                <path
-                  d="M497.9 142.1l-46.1 46.1c-4.7 4.7-12.3 4.7-17 0l-111-111c-4.7-4.7-4.7-12.3 0-17l46.1-46.1c18.7-18.7 49.1-18.7 67.9 0l60.1 60.1c18.8 18.7 18.8 49.1 0 67.9zM284.2 99.8L21.6 362.4.4 483.9c-2.9 16.4 11.4 30.6 27.8 27.8l121.5-21.3 262.6-262.6c4.7-4.7 4.7-12.3 0-17l-111-111c-4.8-4.7-12.4-4.7-17.1 0zM124.1 339.9c-5.5-5.5-5.5-14.3 0-19.8l154-154c5.5-5.5 14.3-5.5 19.8 0s5.5 14.3 0 19.8l-154 154c-5.5 5.5-14.3 5.5-19.8 0zM88 424h48v36.3l-64.5 11.3-31.1-31.1L51.7 376H88v48z"
-                />
-              </svg>
-            </i>
-          </span>
+          <template v-if="categories.income.length"><CategoryItem v-for="c in categories.income" :categoryName="c.title" :key="c.id"></CategoryItem></template>
+        <div class="category-item" v-else>
+          Категорий пока нет
         </div>
-        <div class="category-item">
-          Аванс
-          <span>
-            <i>
-              <svg
-                aria-hidden="true"
-                focusable="false"
-                data-prefix="fas"
-                data-icon="pencil-alt"
-                class="svg-inline--fa fa-pencil-alt fa-w-16"
-                role="img"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-              >
-                <path
-                  d="M497.9 142.1l-46.1 46.1c-4.7 4.7-12.3 4.7-17 0l-111-111c-4.7-4.7-4.7-12.3 0-17l46.1-46.1c18.7-18.7 49.1-18.7 67.9 0l60.1 60.1c18.8 18.7 18.8 49.1 0 67.9zM284.2 99.8L21.6 362.4.4 483.9c-2.9 16.4 11.4 30.6 27.8 27.8l121.5-21.3 262.6-262.6c4.7-4.7 4.7-12.3 0-17l-111-111c-4.8-4.7-12.4-4.7-17.1 0zM124.1 339.9c-5.5-5.5-5.5-14.3 0-19.8l154-154c5.5-5.5 14.3-5.5 19.8 0s5.5 14.3 0 19.8l-154 154c-5.5 5.5-14.3 5.5-19.8 0zM88 424h48v36.3l-64.5 11.3-31.1-31.1L51.7 376H88v48z"
-                />
-              </svg>
-            </i>
-          </span>
+        <div class="category-input" v-if="isVisible">
+          <input type="text" name="category" id="category" v-model="category">
         </div>
-        <div class="category-item">
-          Кэшбек
-          <span>
-            <i>
-              <svg
-                aria-hidden="true"
-                focusable="false"
-                data-prefix="fas"
-                data-icon="pencil-alt"
-                class="svg-inline--fa fa-pencil-alt fa-w-16"
-                role="img"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-              >
-                <path
-                  d="M497.9 142.1l-46.1 46.1c-4.7 4.7-12.3 4.7-17 0l-111-111c-4.7-4.7-4.7-12.3 0-17l46.1-46.1c18.7-18.7 49.1-18.7 67.9 0l60.1 60.1c18.8 18.7 18.8 49.1 0 67.9zM284.2 99.8L21.6 362.4.4 483.9c-2.9 16.4 11.4 30.6 27.8 27.8l121.5-21.3 262.6-262.6c4.7-4.7 4.7-12.3 0-17l-111-111c-4.8-4.7-12.4-4.7-17.1 0zM124.1 339.9c-5.5-5.5-5.5-14.3 0-19.8l154-154c5.5-5.5 14.3-5.5 19.8 0s5.5 14.3 0 19.8l-154 154c-5.5 5.5-14.3 5.5-19.8 0zM88 424h48v36.3l-64.5 11.3-31.1-31.1L51.7 376H88v48z"
-                />
-              </svg>
-            </i>
-          </span>
-        </div>
-        <div class="add-category">+ добавить категорию</div>
-      </div>
+        <div class="add-category" @click="toggle" v-if="!isVisible">+ добавить категорию</div>
+        <div class="add-category" @click="addCategory('income')" v-if="isVisible">Сохранить</div>
+      </div> -->
       <div class="card card-category add-group-category">+ добавить группу категорий</div>
+      </template>
     </div>
   </div>
 </template>
+
+<script>
+import CategoryCard from '@/components/CategoryCard'
+export default {
+  name: 'Category',
+  data: () => ({
+    loading: true,
+    categories: []
+    // categories: {
+    //   income: [],
+    //   outcome: []
+    //   },
+    
+  }),
+  computed:{
+    income() {
+      return this.categories.filter(c => c.type === 'income')
+    },
+    outcome() {
+      return this.categories.filter(c => c.type === 'outcome')
+    }
+  },
+  async mounted() {
+    const cat = await this.$store.dispatch('fetchCategory')
+    this.categories = cat
+    // this.categories.income = cat.filter(c => c.type === 'income')
+    // this.categories.outcome = cat.filter(c => c.type === 'outcome')
+    
+    this.loading = false
+  },
+  methods: {
+    addNewCategory(category) {
+      this.categories.push(category)
+      // if(category.type === 'income') {
+      //   this.categories.income.push(category)
+      // }
+      // if(category.type === 'outcome') {
+      //   this.categories.outcome.push(category)
+      // }
+    },
+    updateCategory(category) {
+      // console.log(category)
+      const index = this.categories.findIndex(c => c.id === category.id)
+      this.categories[index].title = category.title
+      this.categories[index].type = category.type
+      // console.log(index)
+
+      // if(category.id === 'income') {
+      //   const index = this.categories.income.findIndex(c => c.id === category.id)
+      //   this.categories.income[index].title = category.title
+      //   this.categories.income[index].title = category.type
+      // }
+      // if(category.id === 'outcome') {
+      //   const index = this.categories.income.findIndex(c => c.id === category.id)
+      //   this.categories.outcome[index].title = category.title
+      //   this.categories.outcome[index].title = category.type
+      // }
+    }
+  },
+  components: {
+    CategoryCard
+  }
+}
+</script>

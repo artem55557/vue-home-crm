@@ -8,7 +8,7 @@
       </i>
     </div>
     <div class="support">
-      <a href class="nav-btn">
+      <a href class="nav-btn" @click.prevent="testInfo">
         <i>
           <SvgIcon :name="'exclamation'"/>
         </i>Поддержка
@@ -16,7 +16,7 @@
       <a href class="nav-btn">+</a>
     </div>
     <div class="user_info">
-      Имя пользователя
+      {{name}}
       <a href="#" class="nav-btn" @click.prevent="logout">
         <SvgIcon :name="'user'" />
       </a>
@@ -24,11 +24,23 @@
   </nav>
 </template>
 <script>
+import firebase from 'firebase/app'
 export default {
+ 
   methods: {
     logout() {
       this.$store.dispatch('logout')
       this.$router.push('/login')
+    },
+    async testInfo() {
+      const uid = await this.$store.dispatch('getUid')
+      const userUid = firebase.auth().currentUser.uid
+      console.log(`StoreUid: ${uid} UID: ${userUid}`)
+    }
+  },
+  computed: {
+    name() {
+      return this.$store.getters.info.name
     }
   }
 }

@@ -4,12 +4,17 @@ import App from './App.vue'
 import store from './store'
 import router from './router'
 import SvgIcon from './components/app/SvgIcon'
+import Loader from "./components/app/Loader";
+
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/database'
 
+
+
 Vue.config.productionTip = false
 Vue.component('SvgIcon', SvgIcon)
+Vue.component('Loader',Loader)
 Vue.use(Vuelidata)
 
 
@@ -23,8 +28,16 @@ firebase.initializeApp({
   appId: "1:515919502897:web:88450d85c7400a028ebf10"
 })
 
-new Vue({
-  store,
-  router,
-  render: h => h(App),
-}).$mount('#app')
+let app
+
+firebase.auth().onAuthStateChanged(() => {
+  if(!app) {
+    new Vue({
+      store,
+      router,
+      render: h => h(App),
+    }).$mount('#app')
+  }
+})
+
+

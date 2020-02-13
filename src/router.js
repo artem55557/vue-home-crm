@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import firebase from 'firebase/app'
 
 Vue.use(Router)
 
@@ -9,31 +10,31 @@ const router = new Router ({
     {
       path: '/',
       name: 'Home',
-      meta: {layout: 'Main'},
+      meta: {layout: 'Main', auth: true},
       component: () => import('./views/Dashboard.vue')
     },
     {
       path: '/bills',
       name: 'Bills',
-      meta: {layout: 'main'},
+      meta: {layout: 'main', auth: true},
       component: () => import('./views/Bills.vue')
     },
     {
-      path: '/bill',
+      path: '/bill/:id',
       name: 'Bill',
-      meta: {layout: 'main'},
+      meta: {layout: 'main', auth: true},
       component: () => import('./views/Bill.vue')
     },
     {
       path: '/category',
       name: 'Category',
-      meta: {layout: 'main'},
+      meta: {layout: 'main', auth: true},
       component: () => import('./views/Category.vue')
     },
     {
       path: '/createbill',
       name: 'Createbill',
-      meta: {layout: 'main'},
+      meta: {layout: 'main', auth: true},
       component: () => import('./views/Createbill.vue')
     },
     {
@@ -45,13 +46,13 @@ const router = new Router ({
     {
       path: '/record',
       name: 'Record',
-      meta: {layout: 'main'},
+      meta: {layout: 'main', auth: true},
       component: () => import('./views/Record.vue')
     },
     {
       path: '/settings',
       name: 'Settings',
-      meta: {layout: 'main'},
+      meta: {layout: 'main', auth: true},
       component: () => import('./views/Settings.vue')
     },
     {
@@ -69,4 +70,14 @@ const router = new Router ({
   ]
 })
 
+router.beforeEach((to, from, next) => {
+  const currentUser = firebase.auth().currentUser
+  const requireAuth = to.matched.some(record => record.meta.auth)
+
+  if (requireAuth && !currentUser) {
+    next('/login')
+  } else {
+    next()
+  }
+})
 export default router

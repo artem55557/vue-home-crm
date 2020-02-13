@@ -18,10 +18,18 @@
 <script>
 import Sidebar from '../components/app/Sidebar'
 import Navbar from '../components/app/Navbar'
+
 export default {
   components: {
     Sidebar, Navbar
-  }
+  },
+ 
+  async mounted() {
+    if (!Object.keys(this.$store.getters.info).length) {
+      await this.$store.dispatch('fetchInfo')
+    }
+  },
+
 }
 </script>
 <style>
