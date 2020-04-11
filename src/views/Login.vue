@@ -26,6 +26,7 @@
 
 <script>
 import { email, required, minLength } from "vuelidate/lib/validators";
+import messages from '@/utils/messages'
 export default {
   name: "login",
   data: () => ({
@@ -50,9 +51,12 @@ export default {
       try {
         await this.$store.dispatch('login', formData)
         this.$router.push('/')
-      } catch (e) {
-        this.error = e
-      }
+      } catch (e) {}
+    }
+  },
+  mounted() {
+    if(messages[this.$route.query.message]){
+      this.$message.success(messages[this.$route.query.message])
     }
   }
 };

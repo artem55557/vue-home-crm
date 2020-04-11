@@ -20,12 +20,9 @@
       </div>
       <BillCard 
         v-for="bill in bills" 
-        :key="bill.id" 
-        :balance="bill.balance" 
-        :currency="bill.currency" 
-        :name="bill.name" 
-        :icon="bill.icon" 
-        :id="bill.id"
+        :key="bill.id"
+        :bill="bill"
+        :currentMonth="currentMonth"
       />
       <router-link to="/createbill" class="card-add">
         <i>+</i>
@@ -38,17 +35,43 @@
 
 <script>
 import BillCard from '../components/BillCard'
+import dateFilter from '@/filters/date.filter'
 export default {
   data: () => ({
     bills: [],
-    loading: true
+    loading: true,
+    recordsCurrentMonth: [],
+    currentMonth: new Date()
   }),
   components: {
     BillCard
   },
     async mounted() {
       const bills = await this.$store.dispatch('fetchBills')
-      this.bills = bills
+      this.currentMonth.setDate(1)
+      const records = await this.$store.dispatch('fetchRecord')
+      const recordsCurrentMonth = records.filter(r => r.date >= this.currentMonth.toJSON())
+      this.bills = bills.map(b => {
+        const chartData = {
+          labels: [],
+          data: []
+        } 
+        const summOutcome = recordsCurrentMonth.reduce((total, r) => {
+          if(b.id === r.billIdFrom) {
+            total += +r.amount
+            chartData.labels.push(dateFilter(r.date, 'date'))
+            chartData.data.push({amount: r.amount, date: dateFilter(r.date, 'date')})
+          }
+          return total
+        }, 0)
+        const summIncome = recordsCurrentMonth.reduce((total, r) => {
+          if(b.id === r.billIdTo) {
+            total += +r.amount
+          }
+          return total
+        }, 0)
+        return {...b, summOutcome, summIncome, chartData}
+      })
       this.loading = false
     }
     

@@ -3,12 +3,16 @@ import Vuelidata from 'vuelidate'
 import App from './App.vue'
 import store from './store'
 import router from './router'
+import dateFilter from './filters/date.filter'
+import numberFilter from './filters/number.filter'
 import SvgIcon from './components/app/SvgIcon'
 import Loader from "./components/app/Loader";
-
+import messagePlugin from '@/utils/message.plugin'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/database'
+
+
 
 
 
@@ -16,6 +20,9 @@ Vue.config.productionTip = false
 Vue.component('SvgIcon', SvgIcon)
 Vue.component('Loader',Loader)
 Vue.use(Vuelidata)
+Vue.use(messagePlugin)
+Vue.filter('date', dateFilter)
+Vue.filter('number', numberFilter)
 
 
 firebase.initializeApp({
@@ -32,7 +39,7 @@ let app
 
 firebase.auth().onAuthStateChanged(() => {
   if(!app) {
-    new Vue({
+    app = new Vue({
       store,
       router,
       render: h => h(App),

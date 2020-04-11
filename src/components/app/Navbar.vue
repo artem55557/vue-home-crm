@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar">
-    <div class="title">Панель инструментов</div>
+    <div class="title">Панель инструментов </div>
     <div class="search">
       <input type="text" placeholder="Поиск..." />
       <i>
@@ -28,9 +28,9 @@ import firebase from 'firebase/app'
 export default {
  
   methods: {
-    logout() {
-      this.$store.dispatch('logout')
-      this.$router.push('/login')
+    async logout() {
+      await this.$store.dispatch('logout')
+      this.$router.push('/login?message=logout')
     },
     async testInfo() {
       const uid = await this.$store.dispatch('getUid')

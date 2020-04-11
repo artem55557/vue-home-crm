@@ -32,16 +32,28 @@
 export default {
   name: 'transfer',
   data: () => ({
-    fromAccount: null,
-    toAccount: null,
+    fromAccount: '',
+    toAccount: '',
     amount: null,
-    bills: null,
+    bills: [],
+    currency: ''
   }),
   async mounted() {
     const bills = await this.$store.dispatch('fetchBills')
     this.bills = bills
-    this.fromAccount =  this.$route.params.id
+    this.fromAccount =  this.$route.params.id || bills[0].id
+    const indx = bills.findIndex(b => b.id === this.fromAccount)
+    this.currency = bills[indx].currency
+    // console.log(this.currency);
+    // this.currency = 
   },
+  // computed: {
+  //   billTo() {
+  //     const indx = this.bills.findIndex(b => b.id === this.fromAccount)
+  //     const currency = this.bills[indx].currency
+  //     return this.bills.filter(b => b.currency === currency)
+  //   }
+  // },
   methods: {
     async onSubmit() {
       const billFrom = await this.$store.dispatch('fetchBillById', this.fromAccount)
@@ -53,7 +65,8 @@ export default {
         amount: this.amount,
         type: 'transfer',
         description: `Перевод на счет ${billTo.name}`,
-        date: new Date().toJSON()
+        date: new Date().toJSON(),
+        category: ''
       })
       // console.log(recordData);
       const balanceFrom = {balance: billFrom.balance - this.amount}

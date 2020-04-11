@@ -65,8 +65,9 @@ export default {
     this.loading = false
   },
   methods: {
-    addNewCategory(category) {
-      this.categories.push(category)
+    async addNewCategory() {
+      this.categories =  await this.$store.dispatch('fetchCategory')
+      // this.categories.push(category)
       // if(category.type === 'income') {
       //   this.categories.income.push(category)
       // }

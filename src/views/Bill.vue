@@ -31,7 +31,7 @@
         <div class="card bill-total-balace">
           <div class="title">Баланс:</div>
           <div class="total-amount">
-            {{bill.balance}}
+            {{bill.balance | number()}}
             <span>rub</span>
           </div>
           <button class="button outcome">Расход</button>
@@ -41,93 +41,17 @@
         <div class="card card-history">
           <div class="card-history-header">
             <div class="card-history-title">История</div>
-            <div class="filteres">
-              <a class="active" href="#">Все</a>
-              <a href="#">Расход</a>
-              <a href="#">Доход</a>
-              <a href="#">Перевод</a>
-            </div>
+            <HistoryFilters @type="filtersOfType"></HistoryFilters>
           </div>
-          <div class="card-history-item">
-            <div class="row">
-              <div class="item-content-left">
-                <span class="datetime">16:23, 12.12.2018</span>
-              </div>
-              <div class="item-content-right">
-                <i></i>
-                <span class="amount">100 rub</span>
-              </div>
-            </div>
-            <div class="row">
-              <div class="item-content-left">Продукты</div>
-              <div class="item-content-right">Описание</div>
-            </div>
-          </div>
-          <div class="card-history-item">
-            <div class="row">
-              <div class="item-content-left">
-                <span class="datetime">16:23, 12.12.2018</span>
-              </div>
-              <div class="item-content-right">
-                <i></i>
-                <span class="amount">100 rub</span>
-              </div>
-            </div>
-            <div class="row">
-              <div class="item-content-left">Продукты</div>
-              <div class="item-content-right">Описание</div>
-            </div>
-          </div>
-          <div class="card-history-item">
-            <div class="row">
-              <div class="item-content-left">
-                <span class="datetime">16:23, 12.12.2018</span>
-              </div>
-              <div class="item-content-right">
-                <i></i>
-                <span class="amount">100 rub</span>
-              </div>
-            </div>
-            <div class="row">
-              <div class="item-content-left">Продукты</div>
-              <div class="item-content-right">Описание</div>
-            </div>
-          </div>
-          <button class="button">Показать еще</button>
+          <CardHistoryItem v-for="record in recordsHisoryFiltred" :key="record.id" :record="record"></CardHistoryItem>
+          <button class="button" @click="counter">Показать еще</button>
         </div>
       </div>
       <div class="bill-content-right">
         <div class="bill-header">
-          <a href>Добавить счет</a>
+          <router-link to="/createbill">Добавить счет</router-link>
         </div>
-        <div class="card chart">
-          <div class="chart-header">
-            <span class="title">График расходов по счету</span>
-            <ul class="filtres">
-              <li>
-                <a href="#">1м</a>
-              </li>
-              <li class="active">
-                <a href="#">3м</a>
-              </li>
-              <li>
-                <a href="#">6м</a>
-              </li>
-              <li>
-                <a href="#">1г</a>
-              </li>
-              <li>
-                <a href="#">Все</a>
-              </li>
-            </ul>
-            <div class="datepicker">
-              <label for="date-from">С</label>
-              <input type="text" id="date-from" value="13.10.2019" />
-              <label for="date-to">По</label>
-              <input type="text" id="date-to" value="13.11.2019" />
-            </div>
-          </div>
-        </div>
+        <Chart :records='records'></Chart>
       </div>
     </template>
   </div>
@@ -135,20 +59,49 @@
 
 <script>
 import Transfer from '@/components/Transfer'
+import HistoryFilters from '@/components/HistoryFilters'
+import CardHistoryItem from '@/components/CardHistoryItem'
+import Chart from '@/components/Chart'
+import { mapGetters } from 'vuex'
 export default {
   name: 'Bill',
   data: () => ({
     bill: null,
+    records: [],
+    recordsHistory:[],
+    recordsHisoryFiltred: [],
+    type: 'all',
+    firstIndex: 0,
+    lastIndex: 4,
     loading: true
   }),
   async mounted() {
     const id = this.$route.params.id
     const bill = await this.$store.dispatch('fetchBillById', id)
     this. bill = bill
+    this.records = this.allRecords.filter(r => r.billIdFrom === this.bill.id)
+      .sort((prev, next) => new Date(prev.date) - new Date(next.date))
+    this.recordsHistory = [...this.records].reverse()
+    this.recordsHisoryFiltred = this.recordsHistory.slice(this.firstIndex, this.lastIndex)
     this.loading = false
   },
+  computed: mapGetters(['allRecords']),
+  methods: {
+    filtersOfType(type) {
+      this.type = type
+      this.recordsHisoryFiltred = this.recordsHistory.filter(r => r.type === type).slice(this.firstIndex, this.lastIndex)
+      if(type === 'all'){
+        this.recordsHisoryFiltred = this.recordsHistory.slice(this.firstIndex, this.lastIndex)
+      }
+    },
+    counter() {
+      this.firstIndex++
+      this.lastIndex++
+      this.filtersOfType(this.type)
+    }
+  },
   components: {
-    Transfer
+    Transfer, HistoryFilters, CardHistoryItem, Chart
   }
 }
 </script>

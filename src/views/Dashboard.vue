@@ -1,200 +1,26 @@
 <template>
   <div class="content">
-    <div class="content-center">
+    <Loader v-if="loading"></Loader>
+    <template v-else>
+    <div class="content-center" >
       <div class="row">
-        <div class="wrap-card-info">
-          <div class="title">Обзор</div>
-          <div class="card card-info">
-            <div class="card-header">
-              20.11.2019
-              <br />
-              <span>16:23</span>
-            </div>
-            <div class="card-icon">
-              <span>
-                4
-                <br />
-              </span>Cчета
-            </div>
-            <div class="card-body">
-              <span class="card-title">Текущий балланс:</span>
-              <div class="amount rub">
-                100 000
-                <span>rub</span>
-              </div>
-              <div class="wrap-currency">
-                <div class="amount currency">
-                  1421.66
-                  <span>eur</span>
-                </div>
-                <div class="amount currency">
-                  1587.30
-                  <span>usd</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <TotalInfo :bills="bills" :amount="amount" :currency="rates"></TotalInfo>
         <div class="wrap-cards-bill">
           <div class="title">
             <div class="h2">Мои счета</div>
             <a href="#">Добавить счет</a>
           </div>
           <div class="cards-bill">
-            <div class="card card-bill">
-              <div class="card-header">Счет1</div>
-              <div class="card-icon">
-                <img src="/img/_src/vtb24.png" alt class="img-responsive" />
-              </div>
-              <div class="card-body">
-                <div class="amount">30 000</div>
-                <div class="currency">rub</div>
-              </div>
-            </div>
-            <div class="card card-bill">
-              <div class="card-header">Счет2</div>
-              <div class="card-icon">
-                <img src="/img/_src/sberbank.png" alt class="img-responsive" />
-              </div>
-              <div class="card-body">
-                <div class="amount">30 000</div>
-                <div class="currency">rub</div>
-              </div>
-            </div>
-            <div class="card card-bill">
-              <div class="card-header">Счет3</div>
-              <div class="card-icon">
-                <img src="/img/_src/cash_usd.png" alt class="img-responsive" />
-              </div>
-              <div class="card-body">
-                <div class="amount">150</div>
-                <div class="currency">usd</div>
-              </div>
-            </div>
-            <div class="card card-bill">
-              <div class="card-header">Счет4</div>
-              <div class="card-icon">
-                <img src="/img/_src/cash_rub.png" alt class="img-responsive" />
-              </div>
-              <div class="card-body">
-                <div class="amount">25 000</div>
-                <div class="currency">rub</div>
-              </div>
-            </div>
+            <DashboardBillCard v-for="bill in bills" :key="bill.id" :bill="bill"></DashboardBillCard>
           </div>
           <div class="row">
-            <div class="card card-currency-amount">
-              <div class="card-currency-amount-item">
-                <div class="doughnut">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-                <div class="percent">81%</div>
-                <div class="currency">rub</div>
-                <div class="overwiev">
-                  <svg
-                    aria-hidden="true"
-                    focusable="false"
-                    data-prefix="fas"
-                    data-icon="ellipsis-v"
-                    class="svg-inline--fa fa-ellipsis-v fa-w-6"
-                    role="img"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 192 512"
-                  >
-                    <path
-                      d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div class="card-currency-amount-item">
-                <div class="doughnut">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-                <div class="percent">12%</div>
-                <div class="currency">usd</div>
-                <div class="overwiev">
-                  <svg
-                    aria-hidden="true"
-                    focusable="false"
-                    data-prefix="fas"
-                    data-icon="ellipsis-v"
-                    class="svg-inline--fa fa-ellipsis-v fa-w-6"
-                    role="img"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 192 512"
-                  >
-                    <path
-                      d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div class="card-currency-amount-item">
-                <div class="doughnut">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-                <div class="percent">7%</div>
-                <div class="currency">eur</div>
-                <div class="overwiev">
-                  <svg
-                    aria-hidden="true"
-                    focusable="false"
-                    data-prefix="fas"
-                    data-icon="ellipsis-v"
-                    class="svg-inline--fa fa-ellipsis-v fa-w-6"
-                    role="img"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 192 512"
-                  >
-                    <path
-                      d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            <div class="card card-transfer">
-              <form class="transfer">
-                <div class="input-field">
-                  <!-- <input type="text"> -->
-                  <label for="from_account">Списать с</label>
-                  <select id="from_account">
-                    <option value="0">Счет списания</option>
-                    <option value="bill1">Счет1</option>
-                    <option value="bill2">Счет2</option>
-                    <option value="bill3">Счет3</option>
-                  </select>
-                </div>
-                <div class="input-field">
-                  <!-- <input type="text"> -->
-                  <label for="to_account">Перевести на</label>
-                  <select id="to_account">
-                    <option value="0">Счет зачисления</option>
-                    <option value="bill1">Счет1</option>
-                    <option value="bill2">Счет2</option>
-                    <option value="bill3">Счет3</option>
-                  </select>
-                </div>
-                <div class="input-field">
-                  <label for="amount">Сумма</label>
-                  <input type="text" id="amount" />
-                </div>
-                <button class="button" type="submit">Перевести</button>
-              </form>
-            </div>
+            <DashboardAmount :bills="bills" :currency="rates" :amount="amount"></DashboardAmount>
+            <Transfer></Transfer>
           </div>
         </div>
       </div>
       <div class="row str">
-        <div class="card card-chart"></div>
+         <Chart :records='records' class="card-chart"></Chart>
         <div class="card card-currency">
           <div class="card-currency-title">Курсы валют</div>
           <div class="card-currency-item">
@@ -264,6 +90,7 @@
       <div class="card card-history">
         <div class="card-history-header">
           <div class="card-history-title">История</div>
+          <HistoryFilters @type="filtersOfType"></HistoryFilters>
           <div class="filteres">
             <a class="active" href="#">Все</a>
             <a href="#">Расход</a>
@@ -271,104 +98,65 @@
             <a href="#">Перевод</a>
           </div>
         </div>
-        <div class="card-history-item">
-          <div class="row">
-            <div class="item-content-left">
-              <span class="datetime">16:23, 12.12.2018</span>
-            </div>
-            <div class="item-content-right">
-              <i></i>
-              <span class="amount">100 rub</span>
-            </div>
-          </div>
-          <div class="row">
-            <div class="item-content-left">Продукты</div>
-            <div class="item-content-right">Счет</div>
-          </div>
-        </div>
-        <div class="card-history-item">
-          <div class="row">
-            <div class="item-content-left">
-              <span class="datetime">16:23, 12.12.2018</span>
-            </div>
-            <div class="item-content-right">
-              <i></i>
-              <span class="amount">100 rub</span>
-            </div>
-          </div>
-          <div class="row">
-            <div class="item-content-left">Продукты</div>
-            <div class="item-content-right">Счет</div>
-          </div>
-        </div>
-        <div class="card-history-item">
-          <div class="row">
-            <div class="item-content-left">
-              <span class="datetime">16:23, 12.12.2018</span>
-            </div>
-            <div class="item-content-right">
-              <i></i>
-              <span class="amount">100 rub</span>
-            </div>
-          </div>
-          <div class="row">
-            <div class="item-content-left">Продукты</div>
-            <div class="item-content-right">Счет</div>
-          </div>
-        </div>
-        <div class="card-history-item">
-          <div class="row">
-            <div class="item-content-left">
-              <span class="datetime">16:23, 12.12.2018</span>
-            </div>
-            <div class="item-content-right">
-              <i></i>
-              <span class="amount">100 rub</span>
-            </div>
-          </div>
-          <div class="row">
-            <div class="item-content-left">Продукты</div>
-            <div class="item-content-right">Счет</div>
-          </div>
-        </div>
-        <div class="card-history-item">
-          <div class="row">
-            <div class="item-content-left">
-              <span class="datetime">16:23, 12.12.2018</span>
-            </div>
-            <div class="item-content-right">
-              <i></i>
-              <span class="amount">100 rub</span>
-            </div>
-          </div>
-          <div class="row">
-            <div class="item-content-left">Продукты</div>
-            <div class="item-content-right">Счет</div>
-          </div>
-        </div>
-        <div class="card-history-item">
-          <div class="row">
-            <div class="item-content-left">
-              <span class="datetime">16:23, 12.12.2018</span>
-            </div>
-            <div class="item-content-right">
-              <i></i>
-              <span class="amount">100 rub</span>
-            </div>
-          </div>
-          <div class="row">
-            <div class="item-content-left">Продукты</div>
-            <div class="item-content-right">Счет</div>
-          </div>
-        </div>
+        <CardHistoryItem v-for="record in recordsHistoryFiltred" :key="record.id" :record="record"></CardHistoryItem>
+        
       </div>
     </div>
+    </template>
   </div>
 </template>
 
 <script>
+import TotalInfo from '@/components/TotalInfo'
+import DashboardBillCard from '@/components/DashboardBillCard'
+import Transfer from '@/components/Transfer'
+import HistoryFilters from '@/components/HistoryFilters'
+import CardHistoryItem from '@/components/CardHistoryItem'
+import DashboardAmount from '@/components/DashboardAmount'
+import Chart from '@/components/Chart'
+import { mapGetters } from 'vuex'
+
 export default {
-  
+  name: 'Dashboard',
+  data: () => ({
+    loading: true,
+    bills: [],
+    records: [],
+    recordsHistoryFiltred: [],
+    amount: 0,
+    rates: {RUB: 0, USD: 0, EUR: 0},
+  }),
+  async mounted(){
+    this.bills = await this.$store.dispatch('fetchBills')
+    this.records = this.allRecords.sort((prev, next) => new Date(prev.date) - new Date(next.date))
+    const currency = await this.$store.dispatch('fectchCurrency')
+    Object.keys(currency.rates).map(key => {
+      this.rates[key] = currency.rates.RUB/currency.rates[key]
+    })
+    this.recordsHistoryFiltred = this.records.slice(0, 10)
+    this.amount = this.bills.reduce((total, b) => {
+      if(b.currency === 'RUB'){
+        total += +b.balance
+      }
+      if(b.currency === 'USD'){
+        total += +b.balance*this.rates.USD
+      }
+      return total
+    }, 0)
+    this.loading = false
+  },
+  computed: mapGetters(['allRecords']),
+  methods: {
+    filtersOfType(type) {
+      this.recordsHistoryFiltred = this.records.filter(r => r.type === type).reverse().slice(0, 10)
+      if(type === 'all'){
+        this.recordsHistoryFiltred = this.records.slice(0, 10)
+      }
+    }
+  },
+  components: {
+    TotalInfo, DashboardBillCard, Transfer, HistoryFilters, CardHistoryItem, DashboardAmount, Chart
+  }
 }
 
 </script>

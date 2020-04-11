@@ -51,7 +51,7 @@ export default {
         title: this.category,
         type: type
       })
-      this.$emit('created', {...cat, id: cat.id})
+      this.$emit('created')
       this.category = ''
       this.isVisible = !this.isVisible
     },
