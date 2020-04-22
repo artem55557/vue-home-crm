@@ -113,16 +113,7 @@ export default {
     ru,
     currentType: 'all'
   }),
-  computed: {
-    ...mapGetters(['allRecords']),
-    // recordsOfMonth(){
-    //   return  this.recordsFiltred.filter(r => r.date >= this.dateFrom.toJSON() && r.date <= this.dateTo.toJSON())
-    //   .sort((prev, next) => new Date(prev.date) - new Date(next.date))
-    //   .reverse()
-      
-    // },
-  
-  },
+  computed: mapGetters(['allRecords']),
   watch: {
     recordsFiltred() {
       this.setupPagination(this.recordsFiltred)

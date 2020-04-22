@@ -91,15 +91,8 @@
         <div class="card-history-header">
           <div class="card-history-title">История</div>
           <HistoryFilters @type="filtersOfType"></HistoryFilters>
-          <div class="filteres">
-            <a class="active" href="#">Все</a>
-            <a href="#">Расход</a>
-            <a href="#">Доход</a>
-            <a href="#">Перевод</a>
-          </div>
         </div>
         <CardHistoryItem v-for="record in recordsHistoryFiltred" :key="record.id" :record="record"></CardHistoryItem>
-        
       </div>
     </div>
     </template>
