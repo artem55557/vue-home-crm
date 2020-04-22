@@ -46,6 +46,17 @@ export default {
       } catch (e) {
         throw e
       }
+    },
+    async updateRecord({dispatch, commit}, data) {
+      try {
+        const updateData = {... data}
+        delete updateData.id, updateData.categoryName, updateData.billNameFrom ,updateData.billNameTo ,updateData.currency
+        const uid = await dispatch('getUid')
+        await firebase.database().ref(`/users/${uid}/records/${data.id}`).update(updateData)
+        commit('setRecord', data)
+      } catch (e) {
+        console.log(e);
+      }
     }
   },
   mutations: {
@@ -54,6 +65,13 @@ export default {
     },
     createRecord(state,record) {
       state.records.push(record)
+    },
+    setRecord(state, record) {
+      state.records = state.records.map(r => {
+        if (r.id === record.id) {
+          return record
+        } else{ return r}
+      })
     }
   },
   state: {
@@ -62,6 +80,11 @@ export default {
   getters: {
     allRecords(state) {
       return state.records
+    },
+    filtersRecords(state, dateFrom, dateTo) {
+      return state.records.filter(r => r.date >= dateFrom.toJSON() && r.date <= dateTo.toJSON())
+      .sort((prev, next) => new Date(prev.date) - new Date(next.date))
+      .reverse()
     }
   }
 }

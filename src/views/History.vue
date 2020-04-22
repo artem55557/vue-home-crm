@@ -77,10 +77,19 @@
       </div>
       <HistoryFilters @type="filtersOfType"></HistoryFilters>
       <HistoryItem 
-        v-for="record in recordsOfMonth"
+        v-for="record in items"
         :key="record.id"
         :record="record"
+        @submit="submit"
         ></HistoryItem>
+        <Paginate
+          :page-count="pageCount"
+          :click-handler="pageChangeHandler"
+          :prev-text="'Назад'"
+          :next-text="'Вперед'"
+          :container-class="'pagination'"
+          :page-class="'waves-effect'">
+        </Paginate>
     </div>
   </div>
 </template>
@@ -91,34 +100,61 @@ import {ru, en} from 'vuejs-datepicker/dist/locale'
 import HistoryItem from '@/components/HistoryItem'
 import HistoryFilters from '@/components/HistoryFilters'
 import { mapGetters } from 'vuex'
+import paginationMixin from '@/mixins/pagination.mixin'
 export default {
   name: 'History',
+  mixins: [paginationMixin],
   data: () => ({
     // records: [],
     recordsFiltred: [],
     dateFrom: new Date(),
     dateTo: new Date(),
     format: 'dd.MM.yyyy',
-    ru
+    ru,
+    currentType: 'all'
   }),
   computed: {
     ...mapGetters(['allRecords']),
-    recordsOfMonth(){
-      return this.recordsFiltred.filter(r => r.date >= this.dateFrom.toJSON() && r.date <= this.dateTo.toJSON())
-      .sort((prev, next) => new Date(prev.date) - new Date(next.date))
-      .reverse()
+    // recordsOfMonth(){
+    //   return  this.recordsFiltred.filter(r => r.date >= this.dateFrom.toJSON() && r.date <= this.dateTo.toJSON())
+    //   .sort((prev, next) => new Date(prev.date) - new Date(next.date))
+    //   .reverse()
+      
+    // },
+  
+  },
+  watch: {
+    recordsFiltred() {
+      this.setupPagination(this.recordsFiltred)
+    },
+    dateFrom() {
+      this.filtersOfType(this.currentType)
+    },
+    dateTo(){
+      this.filtersOfType(this.currentType)
     }
   },
   async mounted() {
     this.dateFrom.setDate(1)
-    this.recordsFiltred = [...this.allRecords]
+    this.recordsFiltred = this.filtersOfMonth(this.allRecords, this.dateFrom, this.dateTo)
+    this.setupPagination(this.recordsFiltred)
   },
   methods: {
     filtersOfType(type) {
-      this.recordsFiltred = this.records.filter(r => r.type === type)
+      this.currentType = type
+      this.recordsFiltred = this.filtersOfMonth(this.allRecords, this.dateFrom, this.dateTo).filter(r => r.type === type)
       if(type === 'all'){
-        this.recordsFiltred = [...this.records]
+        this.recordsFiltred = this.filtersOfMonth(this.allRecords, this.dateFrom, this.dateTo)
       }
+    },
+    filtersOfMonth(array, dateFrom, dateTo){
+     return array.filter(r => r.date >= dateFrom.toJSON() && r.date <= dateTo.toJSON())
+      .sort((prev, next) => new Date(prev.date) - new Date(next.date))
+      .reverse()
+      
+    },
+    submit(id) {
+      this.recordsFiltred = [...this.allRecords]
     }
   },
   components: {
@@ -127,9 +163,52 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .vdp-datepicker__calendar{
   left: -120%;
+}
+.pagination{
+  margin: 0 auto;
+}
+.pagination li {
+    display: inline-block;
+    border-radius: 2px;
+    text-align: center;
+    vertical-align: top;
+    height: 30px;
+}
+.pagination li.active {
+    background-color: #949191;
+}
+.pagination li a {
+  text-decoration: none;
+  color: #444;
+  display: inline-block;
+  font-size: 1.2rem;
+  padding: 0 10px;
+  line-height: 30px;
+}
+.pagination li.active a {
+  color: #fff;
+}
+.waves-effect {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  overflow: hidden;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  vertical-align: middle;
+  z-index: 1;
+  -webkit-transition: .3s ease-out;
+  transition: .3s ease-out;
+}
+.pagination li.disabled a {
+  cursor: default;
+  color: #999;
 }
 </style>
 

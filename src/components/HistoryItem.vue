@@ -19,7 +19,7 @@
       <div class="history-item-amount">{{record.amount | number()}} {{record.currency}}</div>
     </template>
     <template v-else>
-      <form class="history-item-edit" @submit.prevent="onSubmit">
+      <form class="history-item-edit" @submit.prevent="onSubmit(record.id)">
         <div class="history-item-date">
           <datepicker v-model="date" :format="format"></datepicker>
           <!-- <input type="text" id="date" v-model="date" /> -->
@@ -36,12 +36,12 @@
         </div>
         <div class="history-item-type">
           <select name id="type" v-model="type">
-            <option v-for="type in types" :key="type">{{type}}</option>
+            <option v-for="type in Object.keys(types)" :key="type" :value="type">{{types[type]}}</option>
           </select>
         </div>
         <div class="history-item-category">
           <select name="category" id="category" v-model="category">
-            <option></option>
+            <option v-for="category in categoriesByType" :key="category.id" :value="category.id">{{category.title}}</option>
           </select>
         </div>
         <div class="history-item-description"> <input type="text" id="description" v-model="description"/></div>
@@ -65,6 +65,7 @@ export default {
   },
   data: () => ({
     bills: [],
+    categories: [],
     isEdit: false,
     format: 'dd.MM.yyyy',
     date: '',
@@ -82,14 +83,19 @@ export default {
       change: 'обмен'
     }
   }),
+  computed: {
+   categoriesByType(){
+      return this.categories.filter(c => c.type === this.type)
+    }
+  },
   async mounted() {
-     this.bills = await this.$store.dispatch('fetchBills')
-    // console.log(this.record);
+    this.bills = await this.$store.dispatch('fetchBills')
+    this.categories = (await this.$store.dispatch('fetchCategory'))
     this.date = new Date(this.record.date)
-    this.fromBill = this.record.billIdFrom
-    this.toBill = this.record.billIdTo
-    // this.currency = this.record
-    this.category = this.record.categoryName
+    this.fromBill = this.record.billIdFrom || ''
+    this.toBill = this.record.billIdTo || ''
+    this.category = this.record.type === 'income' || this.record.type === 'outcome' 
+      ? this.categories.find(c => c.title === this.record.categoryName).id : '',
     this.amount = this.record.amount
     this.description = this.record.description
     this.type = this.record.type
@@ -97,7 +103,6 @@ export default {
   methods: {
     onClick(id) {
       this.isEdit = !this.isEdit
-      console.log(id);
       const editData = {
         date:this.date,
         fromBill: this.fromBill,
@@ -109,8 +114,39 @@ export default {
       }
 
     },
-    onSubmit(){
-      console.log('Submit');
+    async onSubmit(id){
+      const formData = {
+        amount: this.amount,
+        billIdFrom: this.fromBill,
+        billIdTo: this.toBill,
+        category: this.category,
+        date: this.date.toJSON(),
+        description: this.description,
+        type: this.type
+      }
+
+      const d = {
+        categoryName: this.categories.find(c => c.id === this.category).title,
+        billNameFrom: this.bills.find(b => b.id === this.fromBill).name || '',
+        currency: this.currency
+      }
+
+      if(this.fromBill !== this.record.billIdFrom) {
+        const prevFromBill = this.bills.find(b => b.id === this.fromBill)
+        const nextFromBill = this.bills.find(b => b.id === this.record.billIdFrom)
+        await this.$store.dispatch('updateBill', {...prevFromBill, balance: prevFromBill.balance + this.amount})
+        await this.$store.dispatch('updateBill', {...nextFromBill, balance: nextFromBill.balance - this.amount})
+      }
+      else if(this.toBill !== this.record.billIdTo) {
+        const prevToBill = this.bills.find(b => b.id === this.toBill)
+        const nextToBill = this.bills.find(b => b.id === this.record.billIdTo)
+        await this.$store.dispatch('updateBill', {...prevToBill, balance: prevToBill.balance - this.amount})
+        await this.$store.dispatch('updateBill', {...nextToBill, balance: nextToBill.balance + this.amount})
+      }
+      await this.$store.dispatch('updateRecord', {...formData, ...d, id})
+      this.$message.success(`Запись id:${id} успешно изменена`)
+      this.$emit('submit', id)
+      this.isEdit = !this.isEdit
     }
   },
   components:{
@@ -126,8 +162,9 @@ export default {
 }
 .history-item-edit{
   display: flex;
-  flex-grow: 1;
-  flex-shrink: 1;
+  /* flex-grow: 1; */
+  /* flex-shrink: 1; */
+  flex: 1 1 95%;
   align-items: center;
   justify-content: space-between;
   padding: 0;

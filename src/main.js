@@ -5,6 +5,7 @@ import store from './store'
 import router from './router'
 import dateFilter from './filters/date.filter'
 import numberFilter from './filters/number.filter'
+import Paginate from 'vuejs-paginate'
 import SvgIcon from './components/app/SvgIcon'
 import Loader from "./components/app/Loader";
 import messagePlugin from '@/utils/message.plugin'
@@ -19,6 +20,7 @@ import 'firebase/database'
 Vue.config.productionTip = false
 Vue.component('SvgIcon', SvgIcon)
 Vue.component('Loader',Loader)
+Vue.component('Paginate', Paginate)
 Vue.use(Vuelidata)
 Vue.use(messagePlugin)
 Vue.filter('date', dateFilter)
