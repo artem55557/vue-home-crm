@@ -10,8 +10,10 @@
             <div class="h2">Мои счета</div>
             <a href="#">Добавить счет</a>
           </div>
-          <div class="cards-bill">
-            <DashboardBillCard v-for="bill in bills" :key="bill.id" :bill="bill"></DashboardBillCard>
+          <div class="cards-bill" v-swiper:billSwiper="swiperOption">
+            <div class="swiper-wrapper">
+              <DashboardBillCard v-for="bill in bills" :key="bill.id" :bill="bill" class="swiper-slide"></DashboardBillCard>
+            </div>
           </div>
           <div class="row">
             <DashboardAmount :bills="bills" :currency="rates" :amount="amount"></DashboardAmount>
@@ -118,6 +120,12 @@ export default {
     recordsHistoryFiltred: [],
     amount: 0,
     rates: {RUB: 0, USD: 0, EUR: 0},
+    swiperOption:{
+      // autoHeight: true,
+      spaceBetween: 10,
+      slidesPerView: "auto",
+      grabCursor: true
+    }
   }),
   async mounted(){
     this.bills = await this.$store.dispatch('fetchBills')
@@ -153,3 +161,14 @@ export default {
 }
 
 </script>
+<style>
+.content-center .wrap-cards-bill{
+  padding: 0 10px;
+}
+.content-center .wrap-cards-bill .card-currency-amount {
+  margin-left: 0;
+}
+.content-center .wrap-cards-bill .card-transfer {
+  margin-right: 0;
+}
+</style>
