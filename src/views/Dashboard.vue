@@ -22,69 +22,16 @@
         </div>
       </div>
       <div class="row str">
-         <Chart :records='records' class="card-chart"></Chart>
+        <Chart :records='records' class="card-chart"></Chart>
         <div class="card card-currency">
           <div class="card-currency-title">Курсы валют</div>
-          <div class="card-currency-item">
-            <div class="card-currency-left">
-              <div class="row">
-                <span class="currencies">usd/rub</span>
-                <span class="percent">1.93%</span>
-              </div>
-              <div class="row">
-                <span class="amount">68.0800</span>
-                <span class="currency">rub</span>
-              </div>
-            </div>
-            <div class="card-currency-right">
-              <img src="/img/_src/path8.png" alt />
-            </div>
-          </div>
-          <div class="card-currency-item">
-            <div class="card-currency-left">
-              <div class="row">
-                <span class="currencies">usd/rub</span>
-                <span class="percent">1.93%</span>
-              </div>
-              <div class="row">
-                <span class="amount">68.0800</span>
-                <span class="currency">rub</span>
-              </div>
-            </div>
-            <div class="card-currency-right">
-              <img src="/img/_src/path8.png" alt />
-            </div>
-          </div>
-          <div class="card-currency-item">
-            <div class="card-currency-left">
-              <div class="row">
-                <span class="currencies">usd/rub</span>
-                <span class="percent">1.93%</span>
-              </div>
-              <div class="row">
-                <span class="amount">68.0800</span>
-                <span class="currency">rub</span>
-              </div>
-            </div>
-            <div class="card-currency-right">
-              <img src="/img/_src/path8.png" alt />
-            </div>
-          </div>
-          <div class="card-currency-item">
-            <div class="card-currency-left">
-              <div class="row">
-                <span class="currencies">usd/rub</span>
-                <span class="percent">1.93%</span>
-              </div>
-              <div class="row">
-                <span class="amount">68.0800</span>
-                <span class="currency">rub</span>
-              </div>
-            </div>
-            <div class="card-currency-right">
-              <img src="/img/_src/path8.png" alt />
-            </div>
-          </div>
+          <DashboardCurrencyItem v-for="rates in currencyRates" 
+            :key="rates.currency" 
+            :currency="rates"
+            :currencyYesterday="ratesYesterday"
+          >
+          </DashboardCurrencyItem>
+         
         </div>
       </div>
     </div>
@@ -108,6 +55,7 @@ import Transfer from '@/components/Transfer'
 import HistoryFilters from '@/components/HistoryFilters'
 import CardHistoryItem from '@/components/CardHistoryItem'
 import DashboardAmount from '@/components/DashboardAmount'
+import DashboardCurrencyItem from '@/components/DashboardCurrencyItem'
 import Chart from '@/components/Chart'
 import { mapGetters } from 'vuex'
 
@@ -120,8 +68,9 @@ export default {
     recordsHistoryFiltred: [],
     amount: 0,
     rates: {RUB: 0, USD: 0, EUR: 0},
+    ratesYesterday:[],
+    currencyRates:[],
     swiperOption:{
-      // autoHeight: true,
       spaceBetween: 10,
       slidesPerView: "auto",
       grabCursor: true
@@ -130,10 +79,21 @@ export default {
   async mounted(){
     this.bills = await this.$store.dispatch('fetchBills')
     this.records = this.allRecords.sort((prev, next) => new Date(prev.date) - new Date(next.date))
-    const currency = await this.$store.dispatch('fectchCurrency')
+    const currency = await this.$store.dispatch('fetchCurrency')
+    this.currencyRates = this.currencyRatesTransform(currency.rates, 'RUB')
+
     Object.keys(currency.rates).map(key => {
-      this.rates[key] = currency.rates.RUB/currency.rates[key]
+      const base = 'RUB'
+      const rates = currency.rates[base]/currency.rates[key]
+      this.rates[key] = rates
     })
+
+    const date = new Date()
+    date.setDate(date.getDate() - 1)
+    const yesterday = date.toJSON().split('T')[0]
+    const currencyYesterday = await this.$store.dispatch('fetchCurrency', yesterday)
+    this.ratesYesterday = this.currencyRatesTransform(currencyYesterday.rates, 'RUB')
+
     this.recordsHistoryFiltred = this.records.slice(0, 10)
     this.amount = this.bills.reduce((total, b) => {
       if(b.currency === 'RUB'){
@@ -153,10 +113,21 @@ export default {
       if(type === 'all'){
         this.recordsHistoryFiltred = this.records.slice(0, 10)
       }
+    },
+
+    currencyRatesTransform(obj, base) {
+      const currencyRates = []
+      Object.keys(obj).map(key => {
+        const rates = obj[base]/obj[key]
+        if(key !== base) {
+          currencyRates.push({base: base, currency: key, rates: rates})
+        }
+      })
+      return currencyRates
     }
   },
   components: {
-    TotalInfo, DashboardBillCard, Transfer, HistoryFilters, CardHistoryItem, DashboardAmount, Chart
+    TotalInfo, DashboardBillCard, Transfer, HistoryFilters, CardHistoryItem, DashboardAmount, Chart, DashboardCurrencyItem
   }
 }
 
@@ -170,5 +141,9 @@ export default {
 }
 .content-center .wrap-cards-bill .card-transfer {
   margin-right: 0;
+}
+.card-currency {
+  flex-direction: column;
+  justify-content: flex-start;
 }
 </style>
