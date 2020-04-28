@@ -19,11 +19,15 @@
 export default {
   name: 'createbill',
   data: () => ({
+    title: 'Создать счет',
     name: '',
     balance: '',
     currency: '',
     icon: ''
   }),
+  created() {
+    this.$meta.setTitle(this.title)
+  },
   methods: {
     async createBill() {
       // if (this.$v.$invalid) {

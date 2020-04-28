@@ -33,6 +33,7 @@ import { email, required, minLength} from 'vuelidate/lib/validators'
 export default {
   name: 'register',
   data: () => ({
+    title: 'Регистрация пользователя',
     name: '',
     email: '',
     password: '',
@@ -42,6 +43,9 @@ export default {
     name: { required },
     email: { email, required },
     password: { required, minLength: minLength(6) }
+  },
+  created() {
+    this.$meta.setTitle(this.title)
   },
   methods: {
     async submitHandler() {

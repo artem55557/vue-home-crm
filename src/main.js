@@ -9,6 +9,7 @@ import Paginate from 'vuejs-paginate'
 import SvgIcon from './components/app/SvgIcon'
 import Loader from "./components/app/Loader";
 import messagePlugin from '@/utils/message.plugin'
+import metaPlugin from '@/utils/meta.plugin'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import firebase from 'firebase/app'
 import 'firebase/auth'
@@ -26,6 +27,7 @@ Vue.component('Loader',Loader)
 Vue.component('Paginate', Paginate)
 Vue.use(Vuelidata)
 Vue.use(messagePlugin)
+Vue.use(metaPlugin)
 Vue.use(VueAwesomeSwiper)
 Vue.filter('date', dateFilter)
 Vue.filter('number', numberFilter)

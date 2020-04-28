@@ -18,6 +18,7 @@ import RecordHistoryToday from '@/components/RecordHistoryToday'
 export default {
   name: 'Record',
   data: () => ({
+    title: 'Запись',
     operationType: [
       {title: 'Расход', type: 'outcome'},
       {title: 'Доход', type: 'income'},
@@ -26,13 +27,17 @@ export default {
       ],
     currentType: 0,
   }),
+  created() {
+    this.$meta.setTitle(this.title)
+  },
   methods: {
     onClick(i) {
       this.currentType = i
     }
   },
   components: {
-    RecordFormOutcome, RecordHistoryToday
+    RecordFormOutcome,
+    RecordHistoryToday
   }
 }
 </script>

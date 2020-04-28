@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar">
-    <div class="title">Панель инструментов </div>
+    <div class="title">{{ pageTitle[this.$route.name] }}</div>
     <div class="search">
       <input type="text" placeholder="Поиск..." />
       <i>
@@ -26,7 +26,19 @@
 <script>
 import firebase from 'firebase/app'
 export default {
- 
+  data: () => ({
+    pageTitle: {
+      'Home': 'Главная',
+      'Bills': 'Счета',
+      'Bill': 'Счет',
+      'Record': 'Запись',
+      'History': 'Исория',
+      'Category': 'Категории',
+      'CreateBill': 'Создание счета',
+      'Settings': 'Настройки'
+    },
+  }),
+
   methods: {
     async logout() {
       await this.$store.dispatch('logout')
@@ -36,7 +48,7 @@ export default {
       const uid = await this.$store.dispatch('getUid')
       const userUid = firebase.auth().currentUser.uid
       console.log(`StoreUid: ${uid} UID: ${userUid}`)
-    }
+    },
   },
   computed: {
     name() {

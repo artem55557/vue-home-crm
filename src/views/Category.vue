@@ -40,6 +40,7 @@ import CategoryCard from '@/components/CategoryCard'
 export default {
   name: 'Category',
   data: () => ({
+    title: 'Категории',
     loading: true,
     categories: []
     // categories: {
@@ -56,42 +57,21 @@ export default {
       return this.categories.filter(c => c.type === 'outcome')
     }
   },
+  created() {
+    this.$meta.setTitle(this.title)
+  },
   async mounted() {
-    const cat = await this.$store.dispatch('fetchCategory')
-    this.categories = cat
-    // this.categories.income = cat.filter(c => c.type === 'income')
-    // this.categories.outcome = cat.filter(c => c.type === 'outcome')
-    
-    this.loading = false
+   this.categories = await this.$store.dispatch('fetchCategory')
+   this.loading = false
   },
   methods: {
     async addNewCategory() {
       this.categories =  await this.$store.dispatch('fetchCategory')
-      // this.categories.push(category)
-      // if(category.type === 'income') {
-      //   this.categories.income.push(category)
-      // }
-      // if(category.type === 'outcome') {
-      //   this.categories.outcome.push(category)
-      // }
     },
     updateCategory(category) {
-      // console.log(category)
       const index = this.categories.findIndex(c => c.id === category.id)
       this.categories[index].title = category.title
       this.categories[index].type = category.type
-      // console.log(index)
-
-      // if(category.id === 'income') {
-      //   const index = this.categories.income.findIndex(c => c.id === category.id)
-      //   this.categories.income[index].title = category.title
-      //   this.categories.income[index].title = category.type
-      // }
-      // if(category.id === 'outcome') {
-      //   const index = this.categories.income.findIndex(c => c.id === category.id)
-      //   this.categories.outcome[index].title = category.title
-      //   this.categories.outcome[index].title = category.type
-      // }
     }
   },
   components: {

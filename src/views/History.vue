@@ -106,6 +106,7 @@ export default {
   mixins: [paginationMixin],
   data: () => ({
     // records: [],
+    title: 'История',
     recordsFiltred: [],
     dateFrom: new Date(),
     dateTo: new Date(),
@@ -124,6 +125,9 @@ export default {
     dateTo(){
       this.filtersOfType(this.currentType)
     }
+  },
+  created() {
+    this.$meta.setTitle(this.title)
   },
   async mounted() {
     this.dateFrom.setDate(1)

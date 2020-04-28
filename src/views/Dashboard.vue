@@ -61,7 +61,9 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'Dashboard',
+  // inject: ['meta'],
   data: () => ({
+    title: 'Главная',
     loading: true,
     bills: [],
     records: [],
@@ -76,6 +78,9 @@ export default {
       grabCursor: true
     }
   }),
+  created() {
+    this.$meta.setTitle(this.title)
+  },
   async mounted(){
     this.bills = await this.$store.dispatch('fetchBills')
     this.records = this.allRecords.sort((prev, next) => new Date(prev.date) - new Date(next.date))
@@ -127,7 +132,14 @@ export default {
     }
   },
   components: {
-    TotalInfo, DashboardBillCard, Transfer, HistoryFilters, CardHistoryItem, DashboardAmount, Chart, DashboardCurrencyItem
+    TotalInfo,
+    DashboardBillCard,
+    Transfer,
+    HistoryFilters,
+    CardHistoryItem,
+    DashboardAmount,
+    Chart,
+    DashboardCurrencyItem
   }
 }
 

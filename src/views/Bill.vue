@@ -66,6 +66,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'Bill',
   data: () => ({
+    title: 'Счет',
     bill: null,
     records: [],
     recordsHistory:[],
@@ -75,6 +76,9 @@ export default {
     lastIndex: 4,
     loading: true
   }),
+  created() {
+    this.$meta.setTitle(this.title)
+  },
   async mounted() {
     const id = this.$route.params.id
     const bill = await this.$store.dispatch('fetchBillById', id)

@@ -30,6 +30,7 @@ import messages from '@/utils/messages'
 export default {
   name: "login",
   data: () => ({
+    title: 'Вход',
     email: '',
     password: '',
     error: ''
@@ -53,6 +54,9 @@ export default {
         this.$router.push('/')
       } catch (e) {}
     }
+  },
+  created() {
+    this.$meta.setTitle(this.title)
   },
   mounted() {
     if(messages[this.$route.query.message]){

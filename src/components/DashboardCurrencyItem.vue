@@ -11,7 +11,6 @@
       </div>
     </div>
     <div class="card-currency-right">
-      <!-- <img src="/img/_src/path8.png" alt /> -->
       <canvas ref='canvas'></canvas>
     </div>
   </div>
