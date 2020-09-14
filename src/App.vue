@@ -1,25 +1,32 @@
 <template>
   <div id="app">
-    
+    <component :is="layout"> 
+      <router-view/>
+    </component> 
   </div>
 </template>
 
 <script>
-
+import EmptyLayout from './layouts/EmptyLayout'
+import MainLayout from './layouts/MainLayout'
 
 export default {
-  name: 'app',
+  
+  computed: {
+    layout () {
+      return (this.$route.meta.layout || 'Empty') + 'Layout'
+    }
+  },
+  components: {
+    EmptyLayout, MainLayout
+  }
   
 }
 </script>
 
 <style>
+@import 'assets/css/styles.min.css';
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  height: 100%;
 }
 </style>
