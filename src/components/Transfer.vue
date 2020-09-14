@@ -5,18 +5,22 @@
         <!-- <input type="text"> -->
         <label for="from_account">Списать с</label>
         <select id="from_account" v-model="fromAccount">
-          <option v-for="b in bills" :key="b.id" :value="b.id">{{
-            b.name
-          }} - {{b.balance}}</option>
+          <template v-if="bills.length">
+            <option v-for="b in bills" :key="b.id" :value="b.id">{{
+              b.name
+            }} - {{b.balance}}</option>
+          </template>
         </select>
       </div>
       <div class="input-field">
         <!-- <input type="text"> -->
         <label for="to_account">Перевести на</label>
         <select id="to_account" v-model="toAccount">
-          <option v-for="b in bills" :key="b.id" :value="b.id">
-            {{b.name}} - {{b.balance}}
-          </option>
+          <template v-if="bills.length">
+            <option v-for="b in bills" :key="b.id" :value="b.id">
+              {{b.name}} - {{b.balance}}
+            </option>
+          </template>
         </select>
       </div>
       <div class="input-field">
@@ -41,9 +45,12 @@ export default {
   async mounted() {
     const bills = await this.$store.dispatch('fetchBills')
     this.bills = bills
-    this.fromAccount =  this.$route.params.id || bills[0].id
-    const indx = bills.findIndex(b => b.id === this.fromAccount)
-    this.currency = bills[indx].currency
+    if(bills.length) {
+      this.fromAccount =  this.$route.params.id || bills[0].id
+      const indx = bills.findIndex(b => b.id === this.fromAccount)
+      this.currency = bills[indx].currency
+    }
+
     // console.log(this.currency);
     // this.currency = 
   },

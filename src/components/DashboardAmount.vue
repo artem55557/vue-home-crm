@@ -32,9 +32,9 @@ export default {
   mounted() {
    this.amountInCurrencies = Object.keys(this. currency)
     .map(key => {
-      const total = this.currencyAmount(this.bills, key)
-      const range = this.currency[key]
-      const percent = total*range*100/this.amount
+      const total = this.currencyAmount(this.bills, key) || 0
+      const range = this.currency[key] || 0
+      const percent = total*range*100/this.amount || 0
       return {
         currency: key,
         total: total,

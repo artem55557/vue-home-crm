@@ -15,7 +15,7 @@ export default {
         const uid = await dispatch('getUid')
         const categories = await dispatch('fetchCategory')
         const bills = await dispatch('fetchBills')
-        const records = (await firebase.database().ref(`/users/${uid}/records`).once('value')).val()
+        const records = (await firebase.database().ref(`/users/${uid}/records`).once('value')).val() || {}
         const recordsModified = Object.keys(records)
           .map(key => ({...records[key], id: key}))
           .map(record => {

@@ -13,6 +13,16 @@
           <div class="cards-bill" v-swiper:billSwiper="swiperOption">
             <div class="swiper-wrapper">
               <DashboardBillCard v-for="bill in bills" :key="bill.id" :bill="bill" class="swiper-slide"></DashboardBillCard>
+              <div class="card card-bill"  v-if="!bills.length">
+                <div class="card-header">Счетов пока нет.</div>
+                <div class="card-icon">
+                  <i></i>
+                </div>
+                <div class="card-body">
+                  <div class="amount">0.0</div>
+                  <div class="currency">?</div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="row">
@@ -42,6 +52,7 @@
           <HistoryFilters @type="filtersOfType"></HistoryFilters>
         </div>
         <CardHistoryItem v-for="record in recordsHistoryFiltred" :key="record.id" :record="record"></CardHistoryItem>
+        <div class="card-history-item" v-if="!records.length">Записей пока нет.</div>
       </div>
     </div>
     </template>

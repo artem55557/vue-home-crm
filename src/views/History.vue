@@ -76,13 +76,17 @@
         </div>
       </div>
       <HistoryFilters @type="filtersOfType"></HistoryFilters>
-      <HistoryItem 
+      <div class="history__body">
+        <HistoryItem 
         v-for="record in items"
         :key="record.id"
         :record="record"
         @submit="submit"
         ></HistoryItem>
+        <div class="card history-item" v-if="!items.length">Записей пока нет.</div>
+      </div>
         <Paginate
+          v-if="items.length"
           :page-count="pageCount"
           :click-handler="pageChangeHandler"
           :prev-text="'Назад'"
@@ -159,7 +163,7 @@ export default {
 </script>
 
 <style>
-.vdp-datepicker__calendar{
+.history-content-header .vdp-datepicker__calendar{
   left: -120%;
 }
 .pagination{
@@ -204,6 +208,24 @@ export default {
 .pagination li.disabled a {
   cursor: default;
   color: #999;
+}
+
+.history-content {
+  /* flex-direction: column; */
+}
+
+.history-content .wrap {
+  display: flex;
+  flex-direction: column;
+  /* flex: 1 1 auto; */
+  height: 100%;
+
+}
+
+.history__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
 }
 </style>
 

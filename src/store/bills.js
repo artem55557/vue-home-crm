@@ -16,7 +16,7 @@ export default {
 
       try {
         const uid = await dispatch('getUid')
-        const bills = (await firebase.database().ref(`/users/${uid}/bills`).once('value')).val()
+        const bills = (await firebase.database().ref(`/users/${uid}/bills`).once('value')).val() || {}
         return Object.keys(bills).map(key => ({...bills[key], id: key}))
       } catch (e) {
         throw e

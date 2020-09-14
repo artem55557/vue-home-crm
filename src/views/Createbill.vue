@@ -1,19 +1,18 @@
 <template>
-  <div>
-<form class="record-form" @submit.prevent="createBill">
-    <label for="name">Наименование счета</label>
-    <input type="text" id="name" v-model="name"/>
+  <div class="create-bill">
+    <form class="record-form" @submit.prevent="createBill">
+      <label for="name">Наименование счета</label>
+      <input type="text" id="name" v-model="name"/>
 
-    <label for="balance">Начальная сумма счета</label>
-    <input type="text" id="balance" v-model.number="balance"/>
-    <label for="currency">Валюта счета</label>
-    <input type="text" id="currency" v-model="currency"/>
-    <label for="icon">Иконка</label>
-    <input type="text" id="icon" v-model="icon"/>
-    <button class="button">Добавить</button>
-  </form>
+      <label for="balance">Начальная сумма счета</label>
+      <input type="text" id="balance" v-model.number="balance"/>
+      <label for="currency">Валюта счета</label>
+      <input type="text" id="currency" v-model="currency"/>
+      <label for="icon">Иконка</label>
+      <input type="text" id="icon" v-model="icon"/>
+      <button class="button">Добавить</button>
+    </form>
   </div>
-  
 </template>
 <script>
 export default {
@@ -79,16 +78,17 @@ select {
   margin-bottom: 10px;
   padding: 10px 20px;
   border: none;
-  background-color: #2a2b31;
+  background-color: #f1f1f1;
 }
 .button {
   align-self: center;
 }
-div {
+.create-bill {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 95%;
-  height: 100%;;
+  width: calc(100% - 90px);
+  /* height: 100%; */
+  align-self: stretch;
 }
 </style>
