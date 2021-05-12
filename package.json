@@ -11,7 +11,7 @@
     "core-js": "^3.4.4",
     "firebase": "^7.6.2",
     "mini-toastr": "^0.8.1",
-    "swiper": "^5.3.7",
+    "swiper": "^6.5.1",
     "vue": "^2.6.10",
     "vue-awesome": "^4.0.2",
     "vue-awesome-swiper": "^4.1.1",
